@@ -13,12 +13,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/nav_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"/>
+            android:background="@color/telemetrySurface"
+            android:minHeight="64dp"
+            app:titleTextColor="@color/telemetryText"
+            app:navigationIconTint="@color/telemetryText"
+            android:elevation="0dp"/>
 
         <!-- Layout to contain contents of nav_main body of screen (drawer will slide over this) -->
         <fragment
@@ -37,6 +40,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:maxWidth="@dimen/nav_drawer_width"
+        android:background="@color/telemetrySurface"
+        app:itemIconTint="@color/colorAccent"
+        app:itemTextColor="@color/telemetryText"
+        app:itemHorizontalPadding="24dp"
+        app:itemVerticalPadding="6dp"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/fragment_nav_header"
         app:menu="@menu/menu_main"/>

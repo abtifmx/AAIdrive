@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5F71E5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#116877</color>
+    <color name="colorPrimaryDark">#0C3444</color>
+    <color name="colorAccent">#087F8C</color>
+    <color name="telemetryBackground">#F1F5F6</color>
+    <color name="telemetrySurface">#FFFFFF</color>
+    <color name="telemetryText">#152C3A</color>
+    <color name="telemetryMuted">#526776</color>
+    <color name="telemetryBorder">#DEE7EB</color>
     <color name="mapRouteLine">#0f52ba</color>
 
     <color name="connectionWaiting">#cccccc</color>

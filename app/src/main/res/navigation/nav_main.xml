@@ -2,6 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main"
     app:startDestination="@id/nav_overview">
+    <fragment android:id="@+id/nav_triplogs"
+        android:name="me.hufman.androidautoidrive.phoneui.fragments.TripLogsFragment"
+        android:label="@string/tl_trips" />
+    <fragment android:id="@+id/nav_cds_live"
+        android:name="me.hufman.androidautoidrive.phoneui.fragments.CdsLiveFragment"
+        android:label="@string/tl_live" />
 
     <fragment
         android:id="@+id/nav_overview"

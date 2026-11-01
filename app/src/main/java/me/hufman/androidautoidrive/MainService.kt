@@ -58,6 +58,7 @@ class MainService: Service() {
 	val securityServiceThread by lazy { SecurityServiceThread(securityAccess) }
 
 	val carInformationObserver = CarInformationObserver()
+	val tripLogger by lazy { me.hufman.androidautoidrive.logging.TripLogger(applicationContext) }
 	val carInformationUpdater by lazy { CarInformationUpdater(appSettings) }
 	val cdsObserver = CDSEventHandler { _, _ -> combinedCallback() }
 
@@ -157,6 +158,7 @@ class MainService: Service() {
 
 	override fun onDestroy() {
 		handleActionStop()
+		tripLogger.close()
 		// undo one time things
 		carInformationObserver.cdsData.removeEventHandler(CDS.VEHICLE.LANGUAGE, cdsObserver)
 		carInformationObserver.callback = { }
@@ -295,6 +297,7 @@ class MainService: Service() {
 
 	fun combinedCallback() {
 		synchronized(MainService::class.java) {
+			tripLogger.setConnected(iDriveConnectionReceiver.isConnected && securityAccess.isConnected())
 			handler.removeCallbacks(shutdownTimeout)
 			startServiceNotification(iDriveConnectionReceiver.brand,
 					ChassisCode.fromCode(carInformationObserver.capabilities["vehicle.type"] ?: "Unknown"),
@@ -517,6 +520,7 @@ class MainService: Service() {
 	 * Stop the service
 	 */
 	private fun handleActionStop() {
+		tripLogger.setConnected(false)
 		Log.i(TAG, "Shutting down apps")
 		synchronized(MainService::class.java) {
 			stopCarApps()
