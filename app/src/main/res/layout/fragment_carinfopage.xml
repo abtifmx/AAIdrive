@@ -34,6 +34,8 @@
             </LinearLayout>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/pane_vertical_margin"
@@ -42,6 +44,9 @@
                 android:name="me.hufman.androidautoidrive.phoneui.fragments.CarSummaryFragment"/>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:id="@+id/paneCarDrivingStats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,6 +54,9 @@
                 android:name="me.hufman.androidautoidrive.phoneui.fragments.CarDrivingStatsFragment"/>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/paneCarAdvancedInfo"

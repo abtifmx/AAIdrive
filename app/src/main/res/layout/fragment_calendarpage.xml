@@ -49,6 +49,9 @@
                 android:onCheckedChanged="@{(button, checked) -> controller.onChangedSwitchCalendar(checked)}"/>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/paneCalendarSettings"
@@ -56,6 +59,9 @@
                 android:visibility="@{settingsModel.calendarEnabled}"/>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/paneCalendars"
@@ -63,6 +69,9 @@
                 android:visibility="@{settingsModel.calendarEnabled}"/>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/paneCalendarEvents"

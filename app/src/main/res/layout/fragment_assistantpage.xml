@@ -26,12 +26,18 @@
             android:layout_marginBottom="@dimen/pane_vertical_margin"/>
 
         <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/paneNotificationSettings"
             android:name="me.hufman.androidautoidrive.phoneui.fragments.AssistantPermissionsFragment"/>
 
         <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/fragment_assistant_applist"

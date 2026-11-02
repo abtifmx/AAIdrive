@@ -78,4 +78,8 @@
     <string name="tl_left">Links</string>
     <string name="tl_right">Rechts</string>
     <string name="tl_dsc">DSC-ingreep</string>
+    <string name="tl_stat_trips">Ritten</string>
+    <string name="tl_stat_time">Totale tijd</string>
+    <string name="tl_stat_size">Grootte</string>
+    <string name="tl_stat_readings">Metingen</string>
 </resources>

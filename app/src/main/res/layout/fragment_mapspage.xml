@@ -78,6 +78,9 @@
             </LinearLayout>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:id="@+id/paneMaps"
                 android:visibility="@{viewmodel.mapSettingsShowing}"
                 android:layout_width="match_parent"
@@ -86,6 +89,9 @@
                 android:name="me.hufman.androidautoidrive.phoneui.fragments.MapSettingsFragment"/>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:id="@+id/paneTesetMap"
                 android:visibility="@{viewmodel.testMapEnabled}"
                 android:layout_width="match_parent"

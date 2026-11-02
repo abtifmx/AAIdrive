@@ -19,6 +19,9 @@
             android:layout_marginBottom="@dimen/pane_vertical_margin"/>
 
         <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/paneDependencyInfo"
@@ -28,6 +31,9 @@
             android:layout_marginBottom="@dimen/pane_vertical_margin"/>
 
         <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/paneConnectionStatus"
@@ -37,12 +43,18 @@
             android:layout_marginBottom="@dimen/pane_vertical_margin"/>
 
         <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/fragmentCarCapabilities"
             android:name="me.hufman.androidautoidrive.phoneui.fragments.CarCapabilitiesFragment"/>
 
         <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/fragmentBclStatus"
