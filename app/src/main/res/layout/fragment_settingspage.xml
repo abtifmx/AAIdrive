@@ -27,6 +27,9 @@
                 android:layout_marginBottom="@dimen/pane_vertical_margin"/>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/paneLanguageSettings"
@@ -46,6 +49,9 @@
                 android:paddingBottom="@dimen/settings_vertical_margin"
                 android:visibility="@{viewModel.showAdvanced}">
                 <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/paneMusicAdvancedSettings"
@@ -56,6 +62,9 @@
                 android:layout_marginBottom="@dimen/pane_vertical_margin"/>
 
             <androidx.fragment.app.FragmentContainerView
+                android:background="@drawable/telemetry_card"
+                android:padding="18dp"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/paneAnalyticsSettings"

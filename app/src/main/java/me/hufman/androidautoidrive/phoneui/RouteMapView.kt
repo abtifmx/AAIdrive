@@ -32,17 +32,22 @@ class RouteMapView(context: Context, segments: List<List<RoutePoint>>) : WebView
         val zoomOut=Gson().toJson(context.getString(R.string.tl_zoom_out))
         contentDescription=context.getString(R.string.tl_route)
         val html="""<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
-            <style>$css html,body,#map{height:100%;margin:0;background:#e3eceb}.leaflet-control-attribution{font-size:10px}</style>
+            <style>$css html,body,#map{height:100%;margin:0;background:#e3eceb}.leaflet-overlay-pane svg{overflow:visible}.leaflet-control-attribution{font-size:10px}</style>
             </head><body><div id="map"></div><script>$js</script><script>
-            var map=L.map('map',{preferCanvas:true,zoomControl:false});
+            var map=L.map('map',{preferCanvas:false,zoomControl:false});
             L.control.zoom({zoomInTitle:$zoomIn,zoomOutTitle:$zoomOut}).addTo(map);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
-            var parts=$points;var lines=L.featureGroup();
-            parts.forEach(function(p){if(p.length)L.polyline(p,{color:'#087f8c',weight:4}).addTo(lines)});
-            lines.addTo(map);var flat=parts.flat();
-            if(flat.length){L.circleMarker(flat[0],{radius:6,color:'#16865b',fillOpacity:1}).addTo(map);
-            L.circleMarker(flat[flat.length-1],{radius:6,color:'#e38d42',fillOpacity:1}).addTo(map);
-            map.fitBounds(lines.getBounds(),{padding:[24,24],maxZoom:17});}
+            var parts=$points;var lines=L.featureGroup();var flat=parts.flat();
+            if(flat.length>1)L.polyline(flat,{color:'#087f8c',weight:3,opacity:.45,dashArray:'6 8'}).addTo(lines);
+            parts.forEach(function(p){
+              if(p.length>1)L.polyline(p,{color:'#087f8c',weight:5,opacity:.95,lineCap:'round',lineJoin:'round'}).addTo(lines);
+              else if(p.length==1)L.circleMarker(p[0],{radius:4,color:'#087f8c',fillOpacity:1}).addTo(lines)});
+            lines.addTo(map);
+            if(flat.length){
+            L.circleMarker(flat[0],{radius:7,color:'#ffffff',weight:3,fillColor:'#16865b',fillOpacity:1}).addTo(map);
+            L.circleMarker(flat[flat.length-1],{radius:7,color:'#ffffff',weight:3,fillColor:'#e38d42',fillOpacity:1}).addTo(map);
+            function fit(){map.invalidateSize();map.fitBounds(lines.getBounds(),{padding:[24,24],maxZoom:17});}
+            fit();setTimeout(fit,300);window.addEventListener('resize',fit);}
             </script></body></html>""".trimIndent()
         loadDataWithBaseURL("https://appassets.androidplatform.net/",html,"text/html","UTF-8",null)
     }
