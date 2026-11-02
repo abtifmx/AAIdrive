@@ -78,4 +78,8 @@
     <string name="tl_left">Links</string>
     <string name="tl_right">Rechts</string>
     <string name="tl_dsc">DSC-Eingriff</string>
+    <string name="tl_stat_trips">Fahrten</string>
+    <string name="tl_stat_time">Gesamtzeit</string>
+    <string name="tl_stat_size">Größe</string>
+    <string name="tl_stat_readings">Messwerte</string>
 </resources>

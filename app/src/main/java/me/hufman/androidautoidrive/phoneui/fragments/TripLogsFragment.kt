@@ -158,8 +158,15 @@ class TripLogsFragment : Fragment() {
                 val trips=withContext(Dispatchers.IO) { store.trips(TripLogger.activeId) }
                 parent.removeAllViews()
                 if(id==null) {
-                    val header=TelemetryUi.card(requireContext(),parent,getString(R.string.tl_trips))
                     val prefs=TripLogger.preferences(context)
+                    val statusText=getString(if(TripLogger.error!=null)R.string.tl_error else if(!prefs.getBoolean(TripLogger.ENABLED,true))R.string.tl_disabled
+                        else if(TripLogger.activeId!=null)R.string.tl_recording else R.string.tl_ready)
+                    val hero=TelemetryUi.hero(requireContext(),parent,getString(R.string.tl_trips),statusText,getString(R.string.tl_privacy))
+                    TelemetryUi.stats(requireContext(),hero,listOf(
+                        getString(R.string.tl_stat_trips) to trips.size.toString(),
+                        getString(R.string.tl_stat_time) to TelemetryUi.duration(trips.sumOf{it.durationMillis()}),
+                        getString(R.string.tl_stat_size) to "${trips.sumOf{it.bytes}/1024} KB"),onHero=true)
+                    val header=TelemetryUi.card(requireContext(),parent)
                     header.addView(SwitchMaterial(requireContext()).apply {
                         text=getString(R.string.tl_record); isChecked=prefs.getBoolean(TripLogger.ENABLED,true)
                         setOnCheckedChangeListener { _,enabled ->
@@ -167,15 +174,13 @@ class TripLogsFragment : Fragment() {
                             view?.postDelayed({if(content!=null) refresh()},500)
                         }
                     })
-                    label(header,getString(if(TripLogger.error!=null)R.string.tl_error else if(!prefs.getBoolean(TripLogger.ENABLED,true))R.string.tl_disabled
-                        else if(TripLogger.activeId!=null)R.string.tl_recording else R.string.tl_ready),17f,true)
-                    label(header,getString(R.string.tl_privacy),13f)
                     action(header,R.string.tl_refresh){refresh()}
                     if(trips.isEmpty()) label(parent,getString(R.string.tl_empty),18f)
                     trips.forEach { trip ->
                         val card=TelemetryUi.card(requireContext(),parent,date(trip.started))
-                        label(card,getString(R.string.tl_duration,TelemetryUi.duration(trip.durationMillis())),22f,true)
-                        label(card,"${status(trip)} · ${getString(R.string.tl_samples,trip.count,trip.bytes/1024)}",13f)
+                        label(card,TelemetryUi.duration(trip.durationMillis()),26f,true)
+                        label(card,getString(R.string.tl_samples,trip.count,trip.bytes/1024),13f)
+                        card.addView(TelemetryUi.pill(requireContext(),status(trip)))
                         card.isClickable=true; card.isFocusable=true
                         card.setOnClickListener {
                             selected=trip.id; more=false; raw=false; offset=0
@@ -186,10 +191,12 @@ class TripLogsFragment : Fragment() {
                     val trip=trips.firstOrNull { it.id==id }
                     if(trip==null) { selected=null; refresh(); return@launch }
                     action(parent,R.string.tl_back){selected=null;refresh()}
-                    val hero=TelemetryUi.card(requireContext(),parent,date(trip.started))
-                    label(hero,getString(R.string.tl_duration,TelemetryUi.duration(trip.durationMillis())),26f,true)
-                    label(hero,"${status(trip)} · ${getString(R.string.tl_samples,trip.count,trip.bytes/1024)}",13f)
-                    val actions=LinearLayout(requireContext()).apply{orientation=LinearLayout.HORIZONTAL}
+                    val hero=TelemetryUi.hero(requireContext(),parent,status(trip),TelemetryUi.duration(trip.durationMillis()),date(trip.started))
+                    TelemetryUi.stats(requireContext(),hero,listOf(
+                        getString(R.string.tl_stat_readings) to trip.count.toString(),
+                        getString(R.string.tl_stat_size) to "${trip.bytes/1024} KB"),onHero=true)
+                    val actions=LinearLayout(requireContext()).apply{orientation=LinearLayout.HORIZONTAL
+                        layoutParams=LinearLayout.LayoutParams(-1,-2).apply{bottomMargin=TelemetryUi.dp(requireContext(),14)}}
                     listOf(R.string.tl_refresh,R.string.tl_export).forEach{title->
                         val button=TelemetryUi.button(requireContext(),getString(title)){
                             if(title==R.string.tl_refresh)refresh()else{exportId=id;export.launch("AAIdrive-${trip.started}.jsonl")}
@@ -197,7 +204,7 @@ class TripLogsFragment : Fragment() {
                         button.layoutParams=LinearLayout.LayoutParams(0,-2,1f).apply{marginEnd=TelemetryUi.dp(requireContext(),4)}
                         actions.addView(button)
                     }
-                    hero.addView(actions)
+                    parent.addView(actions)
                     val end=trip.started+maxOf(1,trip.durationMillis())
                     val analysis=withContext(Dispatchers.IO){TripAnalytics.analyze(store.events(id),trip.started,end)}
                     val selectedMetrics=favorites()

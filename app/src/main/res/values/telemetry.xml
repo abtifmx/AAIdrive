@@ -78,4 +78,8 @@
     <string name="tl_left">Left</string>
     <string name="tl_right">Right</string>
     <string name="tl_dsc">DSC intervention</string>
+    <string name="tl_stat_trips">Trips</string>
+    <string name="tl_stat_time">Total time</string>
+    <string name="tl_stat_size">Size</string>
+    <string name="tl_stat_readings">Readings</string>
 </resources>
