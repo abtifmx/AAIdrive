@@ -288,14 +288,16 @@ class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics
 		distOrCityLabel, timeOrStreetLabel
 	)
 
-	val basicCategories = LinkedHashMap<String, List<Flow<String>>>().apply {
+	val basicCategories = LinkedHashMap<String, List<Flow<Any>>>().apply {
 		put(LiveDashboard.TITLE, LiveDashboard(cdsMetrics).fields)
+		put(LiveCharts.TITLE, LiveCharts(cdsMetrics).fields)
 		put(L.CARINFO_TITLE, overviewFields)
 		put(L.CARINFO_TITLE_DRIVING, drivingFields)
 		put(L.CARINFO_TITLE_SPORT, sportFields)
 	}
-	val advancedCategories = LinkedHashMap<String, List<Flow<String>>>().apply {
+	val advancedCategories = LinkedHashMap<String, List<Flow<Any>>>().apply {
 		put(LiveDashboard.TITLE, basicCategories.getValue(LiveDashboard.TITLE))
+		put(LiveCharts.TITLE, basicCategories.getValue(LiveCharts.TITLE))
 		put(L.CARINFO_TITLE, overviewFields)
 		put(L.CARINFO_TITLE_DRIVING + " ", drivingAdvancedFields)   // slightly different key for the allCategories
 
@@ -308,5 +310,5 @@ class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics
 	}
 	val allCategories = basicCategories + advancedCategories
 	val category = MutableStateFlow(allCategories.keys.first())
-	val categoryFields: Flow<List<Flow<String>>> = category.map { allCategories[it] ?: emptyList() }
+	val categoryFields: Flow<List<Flow<Any>>> = category.map { allCategories[it] ?: emptyList() }
 }

@@ -51,13 +51,13 @@ class CarDetailedView(val state: RHMIState, val coroutineContext: CoroutineConte
 					if (cells.size == 2) {
 						// combine waits for both sides to have a value, so we prepend a placeholder
 						// gross! https://stackoverflow.com/a/72290550
-						val preLeft = flowOf("").onCompletion { emitAll(cells[0]) }
-						val preRight = flowOf("").onCompletion { emitAll(cells[1]) }
+						val preLeft = flowOf<Any>("").onCompletion { emitAll(cells[0]) }
+						val preRight = flowOf<Any>("").onCompletion { emitAll(cells[1]) }
 						preLeft.combine(preRight) { left, right ->
-							arrayOf(left, right)
+							arrayOf<Any>(left, right)
 						}
 					} else {
-						cells[0].map { arrayOf(it, "") }
+						cells[0].map { arrayOf<Any>(it, "") }
 					}
 				}
 				val emptyTable = BMWRemoting.RHMIDataTable(emptyArray(), false, 0, 0, 0, 0, 2, 2)

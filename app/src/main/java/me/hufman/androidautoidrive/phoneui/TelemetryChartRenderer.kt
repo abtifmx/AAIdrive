@@ -152,6 +152,44 @@ object TelemetryChartRenderer {
 		}
 	}
 
+	/** Round gauge with a 240° arc; the arc turns amber/red near the top of the range */
+	fun drawGauge(canvas: Canvas, width: Int, height: Int, value: Double?, min: Double, max: Double,
+	              title: String, valueText: String, style: ChartStyle) {
+		val d = style.density
+		val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+		val stroke = 9 * d
+		val size = minOf(width, height - 14 * d) - stroke
+		val cx = width / 2f; val cy = stroke / 2 + size / 2 + 2 * d
+		val rect = RectF(cx - size / 2, cy - size / 2, cx + size / 2, cy + size / 2)
+		paint.style = Paint.Style.STROKE; paint.strokeWidth = stroke; paint.strokeCap = Paint.Cap.ROUND
+		paint.color = style.grid
+		canvas.drawArc(rect, 150f, 240f, false, paint)
+		val fraction = if (value == null || !value.isFinite()) 0.0 else ((value - min) / (max - min)).coerceIn(0.0, 1.0)
+		if (fraction > 0.0) {
+			paint.color = when { fraction >= .9 -> 0xFFE5484D.toInt(); fraction >= .75 -> 0xFFF5A623.toInt(); else -> style.line }
+			canvas.drawArc(rect, 150f, (240 * fraction).toFloat(), false, paint)
+		}
+		paint.style = Paint.Style.FILL
+		paint.textAlign = Paint.Align.CENTER
+		paint.color = style.label
+		paint.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+		paint.textSize = size * .26f
+		canvas.drawText(valueText, cx, cy + size * .10f, paint)
+		paint.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
+		paint.textSize = size * .15f
+		canvas.drawText(title, cx, cy + size * .42f, paint)
+	}
+
+	/** Renders a gauge into a standalone bitmap */
+	fun renderGaugeBitmap(width: Int, height: Int, value: Double?, min: Double, max: Double,
+	                      title: String, valueText: String, style: ChartStyle): Bitmap {
+		val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+		val canvas = Canvas(bitmap)
+		canvas.drawColor(style.surface)
+		drawGauge(canvas, width, height, value, min, max, title, valueText, style)
+		return bitmap
+	}
+
 	/** Renders a curve into a standalone bitmap, e.g. to send as image to the car (RHMI RaImageModel) */
 	fun renderBitmap(width: Int, height: Int, points: List<Reading>, start: Long, end: Long, style: ChartStyle,
 	                 formatTime: (Long) -> String, formatValue: (Double) -> String = ::plain): Bitmap {
