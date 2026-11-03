@@ -83,4 +83,13 @@
     <string name="tl_stat_size">Size</string>
     <string name="tl_stat_readings">Readings</string>
     <string name="tl_route_speed_missing">Grey: no speed recorded</string>
+    <string name="menu_more">More</string>
+    <string name="tab_trips">Trips</string>
+    <string name="tab_live">Live</string>
+    <string name="tab_car">Car</string>
+    <string name="tile_fuel">Tank</string>
+    <string name="tile_range">Range</string>
+    <string name="tile_engine">Engine</string>
+    <string name="tile_oil">Oil</string>
+    <string name="tl_live_show_all">Show all fields, including empty ones</string>
 </resources>

@@ -1,56 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Use DrawerLayout as root container for activity -->
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/telemetryBackground"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/nav_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/nav_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/telemetrySurface"
-            android:minHeight="64dp"
-            app:titleTextColor="@color/telemetryText"
-            app:navigationIconTint="@color/telemetryText"
-            android:elevation="0dp"/>
-
-        <!-- Layout to contain contents of nav_main body of screen (drawer will slide over this) -->
-        <fragment
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:id="@+id/nav_host_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_main" />
-    </LinearLayout>
-
-    <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:maxWidth="@dimen/nav_drawer_width"
+        android:layout_height="wrap_content"
         android:background="@color/telemetrySurface"
-        app:itemIconTint="@color/colorAccent"
-        app:itemTextColor="@color/telemetryText"
-        app:itemHorizontalPadding="24dp"
-        app:itemShapeFillColor="@color/telemetryAccentSoft"
-        app:itemShapeInsetStart="12dp"
-        app:itemShapeInsetEnd="12dp"
-        app:itemShapeAppearance="@style/Shape.AAIdrive.Medium"
-        app:itemVerticalPadding="6dp"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/fragment_nav_header"
-        app:menu="@menu/menu_main"/>
+        android:minHeight="56dp"
+        android:elevation="0dp"
+        app:titleTextColor="@color/telemetryText"
+        app:navigationIconTint="@color/telemetryText" />
 
-</androidx.drawerlayout.widget.DrawerLayout>
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_main" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/telemetrySurface"
+        app:itemIconTint="@color/telemetryText"
+        app:itemTextColor="@color/telemetryText"
+        app:itemRippleColor="@color/telemetryAccentSoft"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/menu_bottom" />
+</LinearLayout>

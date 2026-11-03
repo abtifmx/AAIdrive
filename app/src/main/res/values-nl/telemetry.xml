@@ -83,4 +83,13 @@
     <string name="tl_stat_size">Grootte</string>
     <string name="tl_stat_readings">Metingen</string>
     <string name="tl_route_speed_missing">Grijs: geen snelheid geregistreerd</string>
+    <string name="menu_more">Meer</string>
+    <string name="tab_trips">Ritten</string>
+    <string name="tab_live">Live</string>
+    <string name="tab_car">Auto</string>
+    <string name="tile_fuel">Tank</string>
+    <string name="tile_range">Actieradius</string>
+    <string name="tile_engine">Motor</string>
+    <string name="tile_oil">Olie</string>
+    <string name="tl_live_show_all">Alle velden tonen, ook zonder waarde</string>
 </resources>

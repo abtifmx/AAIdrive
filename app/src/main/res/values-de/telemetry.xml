@@ -83,4 +83,13 @@
     <string name="tl_stat_size">Größe</string>
     <string name="tl_stat_readings">Messwerte</string>
     <string name="tl_route_speed_missing">Grau: kein Tempowert vorhanden</string>
+    <string name="menu_more">Mehr</string>
+    <string name="tab_trips">Fahrten</string>
+    <string name="tab_live">Live</string>
+    <string name="tab_car">Auto</string>
+    <string name="tile_fuel">Tank</string>
+    <string name="tile_range">Reichweite</string>
+    <string name="tile_engine">Motor</string>
+    <string name="tile_oil">Öl</string>
+    <string name="tl_live_show_all">Alle Felder anzeigen, auch ohne Wert</string>
 </resources>

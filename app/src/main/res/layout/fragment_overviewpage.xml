@@ -21,34 +21,6 @@
             android:paddingTop="@dimen/default_margin"
             android:clipChildren="false"
             android:clipToPadding="false">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/pane_vertical_margin"
-                android:background="@drawable/hero_card"
-                android:padding="24dp"
-                android:textSize="17sp"
-                android:lineSpacingMultiplier="1.15"
-                android:textColor="@color/onHero"
-                android:text="@string/lbl_overviewpage" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/lbl_music_apps" />
-
-            <androidx.fragment.app.FragmentContainerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:id="@+id/fragmentMusicAppGrid"
-                android:background="@drawable/telemetry_card"
-                android:padding="12dp"
-                android:name="me.hufman.androidautoidrive.phoneui.fragments.MusicAppsGridFragment"/>
-
             <androidx.fragment.app.FragmentContainerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,6 +44,33 @@
                 android:visibility="@{viewModel.isCarConnected()}"
                 android:name="me.hufman.androidautoidrive.phoneui.fragments.OverviewConnectedFragment"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/lbl_music_apps" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:id="@+id/fragmentMusicAppGrid"
+                android:background="@drawable/telemetry_card"
+                android:padding="12dp"
+                android:name="me.hufman.androidautoidrive.phoneui.fragments.MusicAppsGridFragment"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/default_margin"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:textSize="13sp"
+                android:textColor="@color/telemetryMuted"
+                android:text="@string/lbl_overviewpage" />
         </LinearLayout>
     </ScrollView>
 </layout>

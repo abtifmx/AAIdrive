@@ -45,7 +45,7 @@ object TelemetryUi {
         setOnClickListener { action() }
     }
     /** Gradient header card with a small overline, a large title and a subtitle */
-    fun hero(context: Context, parent: LinearLayout, overline: String, title: String, subtitle: String): LinearLayout {
+    fun hero(context: Context, parent: LinearLayout, overline: String, title: String, subtitle: String, titleSize: Float = 34f): LinearLayout {
         val hero = column(context, 22).apply {
             setBackgroundResource(R.drawable.hero_card)
             layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(context, 16) }
@@ -55,7 +55,7 @@ object TelemetryUi {
             if (medium) typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         }
         hero.addView(line(overline.uppercase(Locale.getDefault()), 11f, R.color.onHeroMuted, true).apply { letterSpacing = .1f })
-        hero.addView(line(title, 34f, R.color.onHero, true).apply { setPadding(0, dp(context, 6), 0, dp(context, 2)) })
+        hero.addView(line(title, titleSize, R.color.onHero, true).apply { setPadding(0, dp(context, 6), 0, dp(context, 2)) })
         hero.addView(line(subtitle, 14f, R.color.onHeroMuted, false))
         parent.addView(hero)
         return hero

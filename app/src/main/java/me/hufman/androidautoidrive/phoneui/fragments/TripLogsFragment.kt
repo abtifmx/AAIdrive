@@ -161,7 +161,7 @@ class TripLogsFragment : Fragment() {
                     val prefs=TripLogger.preferences(context)
                     val statusText=getString(if(TripLogger.error!=null)R.string.tl_error else if(!prefs.getBoolean(TripLogger.ENABLED,true))R.string.tl_disabled
                         else if(TripLogger.activeId!=null)R.string.tl_recording else R.string.tl_ready)
-                    val hero=TelemetryUi.hero(requireContext(),parent,getString(R.string.tl_trips),statusText,getString(R.string.tl_privacy))
+                    val hero=TelemetryUi.hero(requireContext(),parent,getString(R.string.tl_trips),statusText,getString(R.string.tl_privacy),20f)
                     TelemetryUi.stats(requireContext(),hero,listOf(
                         getString(R.string.tl_stat_trips) to trips.size.toString(),
                         getString(R.string.tl_stat_time) to TelemetryUi.duration(trips.sumOf{it.durationMillis()}),
