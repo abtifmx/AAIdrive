@@ -13,7 +13,7 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class LiveDashboardTest {
-    @Test fun invalidUpdatesClearDisplayedValuesAndPdcKeepsSensorOrder() = runBlocking {
+    @Test fun invalidUpdatesClearDisplayedValuesAndPdcFiltersSpecialCodes() = runBlocking {
         suspend fun read(index: Int, property: io.bimmergestalt.idriveconnectkit.CDSProperty,
                          initial: String, update: String? = null): String {
             var callback: CDSEventHandler? = null
@@ -37,8 +37,9 @@ class LiveDashboardTest {
         assertEquals("Motor: --", read(0, CDS.ENGINE.TEMPERATURE, warm, """{"temperature":{"engine":255}}"""))
         assertEquals("Motor: --", read(0, CDS.ENGINE.TEMPERATURE, warm, """{"error":401}"""))
         assertEquals("Tank: 0,0 l", read(4, CDS.SENSORS.FUEL, """{"fuel":{"tanklevel":0}}"""))
-        assertEquals("Vorn links: 10/20/30 cm", read(16, CDS.SENSORS.PDCRANGEFRONT,
-            """{"PDCRangeFront":{"outLeft":10,"left":20,"middleLeft":30,"middleRight":40}}"""))
+        assertNull(me.hufman.androidautoidrive.carapp.carinfo.ParkingSensors.distance(254.0))
+        assertNull(me.hufman.androidautoidrive.carapp.carinfo.ParkingSensors.distance(253.0))
+        assertEquals(120, me.hufman.androidautoidrive.carapp.carinfo.ParkingSensors.distance(120.0))
         assertEquals("Höhe: --", read(11, CDS.NAVIGATION.GPSEXTENDEDINFO,
             """{"GPSExtendedInfo":{"altitude":120}}""", """{"GPSExtendedInfo":{"altitude":65530}}"""))
     }
@@ -56,11 +57,11 @@ class LiveDashboardTest {
         val info = CarDetailedInfo(emptyMap(), CDSMetrics(CarInformation()))
         val fields = info.basicCategories.getValue(LiveDashboard.TITLE)
         assertSame(fields, info.advancedCategories.getValue(LiveDashboard.TITLE))
-        assertEquals(LiveDashboard.TITLE, info.category.value)
-        assertEquals(20, fields.size)
+        assertEquals(me.hufman.androidautoidrive.carapp.carinfo.LiveCharts.TITLE, info.category.value)
+        assertEquals(16, fields.size)
         // Every cell renders immediately even when the car provides no CDS data.
         withTimeout(1000) {
-            fields.forEach { assertTrue(it.first().isNotEmpty()) }
+            fields.forEach { assertTrue((it.first() as String).isNotEmpty()) }
         }
     }
 }

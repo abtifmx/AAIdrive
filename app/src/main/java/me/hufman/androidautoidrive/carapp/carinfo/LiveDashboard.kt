@@ -31,13 +31,6 @@ class LiveDashboard(metrics: CDSMetrics) {
             "$label: ${format(number(json, *path)?.takeIf(valid), unit, decimals)}"
         }.onStart { emit("$label: --") }.distinctUntilChanged()
 
-    private fun pdc(property: CDSProperty, name: String, label: String, keys: List<String>): Flow<String> =
-        data.flow[property].map { json ->
-            label + ": " + keys.joinToString("/") { key ->
-                format(number(json, name, key)?.takeIf { it in 0.0..254.0 }, "")
-            } + " cm"
-        }.onStart { emit("$label: --/--/-- cm") }.distinctUntilChanged()
-
     // The existing iDrive view renders pairs as a scrollable two-column table.
     // Explicit units avoid waiting for the vehicle.units subscription.
     val fields: List<Flow<String>> = listOf(
@@ -50,15 +43,11 @@ class LiveDashboard(metrics: CDSMetrics) {
         field(CDS.DRIVING.SPEEDACTUAL, "Tempo Ist", " km/h", valid = { it in 0.0..400.0 }, path = arrayOf("speedActual")),
         field(CDS.DRIVING.ACCELERATION, "Längs", " m/s²", 2, { it in -100.0..100.0 }, "acceleration", "longitudinal"),
         field(CDS.DRIVING.ACCELERATION, "Quer", " m/s²", 2, { it in -100.0..100.0 }, "acceleration", "lateral"),
-        field(CDS.DRIVING.PARKINGBRAKE, "Parkbremse Code", valid = { it in 0.0..254.0 }, path = arrayOf("parkingBrake")),
+        metrics.parkingBrakeSet.map { "Parkbremse: ${if (it) "angezogen" else "gelöst"}" }.onStart { emit("Parkbremse: --") },
         field(CDS.CONTROLS.CRUISECONTROL, "Tempomat Soll", " km/h", valid = { it in 0.0..400.0 }, path = arrayOf("cruiseControl", "desiredSpeed")),
         field(CDS.NAVIGATION.GPSEXTENDEDINFO, "Höhe", " m", valid = { it in -1000.0..10000.0 }, path = arrayOf("GPSExtendedInfo", "altitude")),
         field(CDS.SENSORS.TEMPERATUREEXTERIOR, "Außen", " °C", 1, { it in -80.0..100.0 }, "temperatureExterior"),
         field(CDS.SENSORS.TEMPERATUREINTERIOR, "Innen", " °C", 1, { it in -80.0..100.0 }, "temperatureInterior"),
-        flowOf("PDC (cm)"), flowOf("Reihenfolge: links → rechts"),
-        pdc(CDS.SENSORS.PDCRANGEFRONT, "PDCRangeFront", "Vorn links", listOf("outLeft", "left", "middleLeft")),
-        pdc(CDS.SENSORS.PDCRANGEFRONT, "PDCRangeFront", "Vorn rechts", listOf("middleRight", "right", "outRight")),
-        pdc(CDS.SENSORS.PDCRANGEREAR, "PDCRangeRear", "Hinten links", listOf("outLeft", "left", "middleLeft")),
-        pdc(CDS.SENSORS.PDCRANGEREAR, "PDCRangeRear", "Hinten rechts", listOf("middleRight", "right", "outRight"))
+        flowOf("Parksensoren"), flowOf("Siehe Kategorie 430d PDC")
     )
 }

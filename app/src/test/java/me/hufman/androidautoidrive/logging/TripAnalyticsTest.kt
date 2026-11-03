@@ -31,6 +31,18 @@ class TripAnalyticsTest {
         val old=TripAnalytics.analyze(sequenceOf(sample(1000,"navigation.GPSExtendedInfo","""{"GPSExtendedInfo":{"altitude":85}}""")),1000,2000)
         assertTrue(old.route.isEmpty())
     }
+    @Test fun routeSpeedsFollowGpsTimestampsAndLeaveMissingValuesUncoloured() {
+        fun gps(time: Long) = sample(time, "navigation.GPSPosition",
+            """{"GPSPosition":{"latitude":52.1,"longitude":13.1}}""")
+        fun speed(time: Long, value: Int, cached: Boolean = false) =
+            sample(time, "driving.speedActual", """{"speedActual":$value}""", cached)
+        val events = sequenceOf(
+            speed(1000, 20), gps(2000), speed(3000, 60), gps(3000),
+            speed(5000, 65535), gps(5100), gps(9000), speed(9000, 100, cached = true)
+        )
+        assertEquals(listOf(40.0, 60.0, null, null),
+            TripAnalytics.analyze(events, 1000, 9000).route.single().map { it.speedKmh })
+    }
     @Test fun statusValuesUseBandsAndPdcUsesCentimetres(){
         assertEquals(MetricKind.STATE,TripAnalytics.metrics.first{it.id=="gear"}.kind)
         assertEquals(MetricKind.STATE,TripAnalytics.metrics.first{it.id=="park"}.kind)

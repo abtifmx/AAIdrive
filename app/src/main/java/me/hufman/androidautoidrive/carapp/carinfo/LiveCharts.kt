@@ -1,10 +1,11 @@
 package me.hufman.androidautoidrive.carapp.carinfo
 
-import android.graphics.Bitmap
+import android.graphics.*
 import com.google.gson.JsonObject
 import de.bmw.idrive.BMWRemoting
 import io.bimmergestalt.idriveconnectkit.CDS
 import io.bimmergestalt.idriveconnectkit.CDSProperty
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -22,13 +23,14 @@ import java.util.Locale
  */
 class LiveCharts(metrics: CDSMetrics) {
 	companion object {
-		const val TITLE = "430d Charts"
+		const val TITLE = "430d Dashboard"
+		const val DETAILS_TITLE = "430d Verläufe"
 		const val WINDOW_MS = 120_000L
 		const val REFRESH_MS = 1500L
 		// bitmap sizes in px. They are scaled by the car to the table column
-		const val LINE_WIDTH = 340
-		const val LINE_HEIGHT = 130
-		const val GAUGE_SIZE = 150
+		const val LINE_WIDTH = 760
+		const val LINE_HEIGHT = 240
+		const val GAUGE_SIZE = 190
 
 		// dark colors for the car display
 		val STYLE = ChartStyle(
@@ -63,31 +65,52 @@ class LiveCharts(metrics: CDSMetrics) {
 		return BMWRemoting.RHMIResourceData(BMWRemoting.RHMIResourceType.IMAGEDATA, bytes)
 	}
 
-	/** records every update, but renders at most once per REFRESH_MS */
-	private fun <T> Series.rendered(render: (Double?) -> T): Flow<T> =
-		source.onEach { it?.let(history::add) }
-			.conflate()
-			.map { render(history.latest()) }
-			.onEach { delay(REFRESH_MS) }
-			.flowOn(Dispatchers.Default)
 
-	private fun gauge(s: Series): Flow<Any> = s.rendered { value ->
-		png(TelemetryChartRenderer.renderGaugeBitmap(GAUGE_SIZE, GAUGE_SIZE, value, s.min, s.max, s.unit, s.text(value), STYLE))
-	}
+    private fun Series.frames(): Flow<Double?> = flow {
+        kotlinx.coroutines.coroutineScope {
+            var current: Double? = null
+            val reader = launch { source.collect { value -> current = value; value?.let(history::add) } }
+            try {
+                while (true) { emit(current); delay(REFRESH_MS) }
+            } finally { reader.cancel() }
+        }
+    }.flowOn(Dispatchers.Default)
 
-	private fun line(s: Series): Flow<Any> = s.rendered {
-		val now = System.currentTimeMillis()
-		png(TelemetryChartRenderer.renderBitmap(LINE_WIDTH, LINE_HEIGHT, s.history.snapshot(), now - WINDOW_MS, now, STYLE,
-			formatTime = { elapsed -> "${(elapsed - WINDOW_MS) / 1000}s" },
-			formatValue = { String.format(Locale.GERMAN, "%.0f", it) }))
-	}
+    private fun dashboardRow(series: List<Series>): Flow<Any> =
+        combine(series.map { it.frames() }) { values ->
+            val bitmap = Bitmap.createBitmap(LINE_WIDTH, 220, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            canvas.drawColor(STYLE.surface)
+            series.forEachIndexed { index, s ->
+                canvas.save()
+                canvas.translate((index * GAUGE_SIZE).toFloat(), 0f)
+                TelemetryChartRenderer.drawGauge(canvas, GAUGE_SIZE, 185, values[index], s.min, s.max,
+                    s.unit, s.text(values[index]), STYLE)
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = STYLE.label; textSize = 22f; textAlign = Paint.Align.CENTER
+                }
+                canvas.drawText(s.title, GAUGE_SIZE / 2f, 211f, paint)
+                canvas.restore()
+            }
+            png(bitmap) as Any
+        }
 
-	private fun label(s: Series): Flow<Any> = s.source.map { "${s.title}: ${s.text(it)} ${s.unit}" as Any }
-		.onStart { emit("${s.title}: -- ${s.unit}") }.distinctUntilChanged()
+    private fun line(s: Series): Flow<Any> = s.frames().map { current ->
+        val now = System.currentTimeMillis()
+        val bitmap = Bitmap.createBitmap(LINE_WIDTH, LINE_HEIGHT + 50, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        canvas.drawColor(STYLE.surface)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = STYLE.label; textSize = 25f }
+        val value = current?.let { "${s.text(it)} ${s.unit}" } ?: "aktuell nicht verfügbar"
+        canvas.drawText("${s.title} · $value", 16f, 32f, paint)
+        canvas.translate(0f, 50f)
+        TelemetryChartRenderer.drawCurve(canvas, LINE_WIDTH, LINE_HEIGHT, s.history.snapshot(), now - WINDOW_MS, now,
+            STYLE.copy(density = 1.7f), formatTime = { elapsed -> "${(elapsed - WINDOW_MS) / 1000}s" },
+            formatValue = { String.format(Locale.GERMAN, if (s.unit == "°C") "%.1f" else "%.0f", it) },
+            lowerBound = if (s.min >= 0 && s.unit != "°C") 0.0 else null)
+        png(bitmap) as Any
+    }
 
-	/** Cells are laid out two per row: gauges first, then one (label, line chart) row per value */
-	val fields: List<Flow<Any>> = listOf(
-		gauge(oil), gauge(engine),
-		gauge(rpm), gauge(speed)
-	) + listOf(oil, engine, rpm, speed, torque, pedal).flatMap { listOf(label(it), line(it)) }
+    val fields: List<Flow<Any>> = listOf(dashboardRow(listOf(oil, engine, rpm, speed)))
+    val detailFields: List<Flow<Any>> = listOf(oil, engine, rpm, speed, torque, pedal).map(::line)
 }

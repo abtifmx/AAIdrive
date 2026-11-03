@@ -9,7 +9,7 @@ data class Metric(val id: String, val title: Int, val property: String, val path
                   val unit: String = "", val kind: MetricKind = MetricKind.CURVE,
                   val low: Double = -1e9, val high: Double = 1e9, val suffix: String = "")
 data class Reading(val time: Long, val value: Double)
-data class RoutePoint(val time: Long, val lat: Double, val lon: Double)
+data class RoutePoint(val time: Long, val lat: Double, val lon: Double, val speedKmh: Double? = null)
 data class TripAnalysis(val series: Map<String, List<Reading>>, val route: List<List<RoutePoint>>,
                         val latest: Map<String, JsonObject>)
 
@@ -60,6 +60,7 @@ object TripAnalytics {
         val states = hashMapOf<String, java.util.TreeMap<Int, Reading>>()
         val latest = linkedMapOf<String, JsonObject>()
         val route = java.util.TreeMap<Int, RoutePoint>()
+        val routeSpeeds = java.util.TreeMap<Int, Reading>()
         val byProperty = metrics.groupBy { it.property }
         events.forEach { event ->
             if (event.get("type")?.asString == "sample") {
@@ -69,6 +70,11 @@ object TripAnalytics {
                 val time = event.get("timestamp")?.asLong ?: return@forEach
                 val json = event.getAsJsonObject("value") ?: return@forEach
                 val bucket = (((time - start).coerceIn(0, span) * 400) / span).toInt()
+                val routeBucket = (((time - start).coerceIn(0, span) * 20000) / span).toInt()
+                if (property == "driving.speedActual") {
+                    val speed = number(json, "speedActual")?.takeIf { it in 0.0..400.0 }
+                    routeSpeeds[routeBucket] = Reading(time, speed ?: Double.NaN)
+                }
                 byProperty[property].orEmpty().forEach { metric ->
                     val value = number(json, metric.path)?.takeIf { it in metric.low..metric.high }
                     // NaN marks an explicit unavailable reading: never bridge it with a curve.
@@ -90,7 +96,6 @@ object TripAnalytics {
                     val lat = number(json, "GPSPosition.latitude")
                     val lon = number(json, "GPSPosition.longitude")
                     if (lat != null && lon != null && lat in -85.0..85.0 && lon in -180.0..180.0 && !(lat == 0.0 && lon == 0.0)) {
-                        val routeBucket = (((time - start).coerceIn(0, span) * 20000) / span).toInt()
                         route[routeBucket] = RoutePoint(time, lat, lon)
                     }
                 }
@@ -101,11 +106,27 @@ object TripAnalytics {
                 else buckets[metric.id]?.values?.flatten()?.distinct()?.sortedBy { it.time }.orEmpty()
         }
         val segments = mutableListOf<MutableList<RoutePoint>>()
+        val speeds = routeSpeeds.values.toList()
         route.values.forEach { point ->
             val previous = segments.lastOrNull()?.lastOrNull()
             if (previous == null || point.time - previous.time > 30000) segments.add(mutableListOf())
-            segments.last().add(point)
+            segments.last().add(point.copy(speedKmh = routeSpeed(speeds, point.time)))
         }
         return TripAnalysis(series, segments, latest)
+    }
+
+    private fun routeSpeed(speeds: List<Reading>, time: Long): Double? {
+        val index = speeds.binarySearchBy(time) { it.time }
+        if (index >= 0) return speeds[index].value.takeIf(Double::isFinite)
+        val nextIndex = -index - 1
+        val before = speeds.getOrNull(nextIndex - 1)
+        val after = speeds.getOrNull(nextIndex)
+        if (before != null && after != null && after.time - before.time <= 5_000 &&
+            before.value.isFinite() && after.value.isFinite()) {
+            val fraction = (time - before.time).toDouble() / (after.time - before.time)
+            return before.value + (after.value - before.value) * fraction
+        }
+        return listOfNotNull(before, after).minByOrNull { kotlin.math.abs(it.time - time) }
+            ?.takeIf { kotlin.math.abs(it.time - time) <= 2_500 && it.value.isFinite() }?.value
     }
 }

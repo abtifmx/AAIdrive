@@ -30,7 +30,7 @@ object TelemetryChartRenderer {
 	}
 
 	fun drawCurve(canvas: Canvas, width: Int, height: Int, points: List<Reading>, start: Long, end: Long,
-	              style: ChartStyle, selected: Reading? = null, formatTime: (Long) -> String, formatValue: (Double) -> String = ::plain) {
+	              style: ChartStyle, selected: Reading? = null, formatTime: (Long) -> String, formatValue: (Double) -> String = ::plain, lowerBound: Double? = null) {
 		val finite = points.filter { it.value.isFinite() }
 		if (finite.isEmpty()) return
 		val d = style.density
@@ -41,6 +41,7 @@ object TelemetryChartRenderer {
 		if (minimum == maximum) { minimum -= .5; maximum += .5 }
 		val pad = (maximum - minimum) * .08
 		minimum -= pad; maximum += pad
+		if (lowerBound != null) minimum = maxOf(lowerBound, minimum)
 		fun y(value: Double) = frame.bottom - ((value - minimum) / (maximum - minimum)).toFloat() * (frame.bottom - frame.top)
 
 		paint.textSize = 11 * d
@@ -158,7 +159,7 @@ object TelemetryChartRenderer {
 		val d = style.density
 		val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 		val stroke = 9 * d
-		val size = minOf(width, height - 14 * d) - stroke
+		val size = minOf(width.toFloat(), height - 14 * d) - stroke
 		val cx = width / 2f; val cy = stroke / 2 + size / 2 + 2 * d
 		val rect = RectF(cx - size / 2, cy - size / 2, cx + size / 2, cy + size / 2)
 		paint.style = Paint.Style.STROKE; paint.strokeWidth = stroke; paint.strokeCap = Paint.Cap.ROUND

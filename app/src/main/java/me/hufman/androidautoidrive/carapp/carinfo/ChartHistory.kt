@@ -9,7 +9,7 @@ class ChartHistory(val windowMillis: Long, private val clock: () -> Long = Syste
 	@Synchronized fun add(value: Double, time: Long = clock()) {
 		if (!value.isFinite()) return
 		readings.addLast(Reading(time, value))
-		while (readings.isNotEmpty() && readings.first().time < time - windowMillis - 5000) readings.removeFirst()
+		while (readings.isNotEmpty() && readings.first().time < time - windowMillis) readings.removeFirst()
 	}
 
 	@Synchronized fun snapshot(): List<Reading> = readings.toList()

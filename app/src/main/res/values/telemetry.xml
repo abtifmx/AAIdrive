@@ -82,4 +82,5 @@
     <string name="tl_stat_time">Total time</string>
     <string name="tl_stat_size">Size</string>
     <string name="tl_stat_readings">Readings</string>
+    <string name="tl_route_speed_missing">Grey: no speed recorded</string>
 </resources>
