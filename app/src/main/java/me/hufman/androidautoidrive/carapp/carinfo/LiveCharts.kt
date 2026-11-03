@@ -26,7 +26,7 @@ class LiveCharts(metrics: CDSMetrics) {
 		const val TITLE = "430d Dashboard"
 		const val DETAILS_TITLE = "430d Verläufe"
 		const val WINDOW_MS = 120_000L
-		const val REFRESH_MS = 1500L
+		const val REFRESH_MS = 4000L
 		// bitmap sizes in px. They are scaled by the car to the table column
 		const val LINE_WIDTH = 760
 		const val LINE_HEIGHT = 240
@@ -77,7 +77,10 @@ class LiveCharts(metrics: CDSMetrics) {
     }.flowOn(Dispatchers.Default)
 
     private fun dashboardRow(series: List<Series>): Flow<Any> =
-        combine(series.map { it.frames() }) { values ->
+        combine(series.map { it.frames() }) { values -> values.toList() }
+        // only send a new image when a displayed (rounded) value changed
+        .distinctUntilChanged { old, new -> series.indices.all { series[it].text(old[it]) == series[it].text(new[it]) } }
+        .map { values ->
             val bitmap = Bitmap.createBitmap(LINE_WIDTH, 220, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)
             canvas.drawColor(STYLE.surface)

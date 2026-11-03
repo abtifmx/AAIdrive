@@ -315,6 +315,6 @@ class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics
 		put(L.CARINFO_TITLE_TRAVEL, travelFields)
 	}
 	val allCategories = basicCategories + advancedCategories
-	val category = MutableStateFlow(LiveCharts.TITLE)
+	val category = MutableStateFlow(allCategories.keys.first())
 	val categoryFields: Flow<List<Flow<Any>>> = category.map { allCategories[it] ?: emptyList() }
 }

@@ -57,7 +57,7 @@ class LiveDashboardTest {
         val info = CarDetailedInfo(emptyMap(), CDSMetrics(CarInformation()))
         val fields = info.basicCategories.getValue(LiveDashboard.TITLE)
         assertSame(fields, info.advancedCategories.getValue(LiveDashboard.TITLE))
-        assertEquals(me.hufman.androidautoidrive.carapp.carinfo.LiveCharts.TITLE, info.category.value)
+        assertEquals(LiveDashboard.TITLE, info.category.value)   // start on the text page, the image pages are heavier for the car
         assertEquals(16, fields.size)
         // Every cell renders immediately even when the car provides no CDS data.
         withTimeout(1000) {

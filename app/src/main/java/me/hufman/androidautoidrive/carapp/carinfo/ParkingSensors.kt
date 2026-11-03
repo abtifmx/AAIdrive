@@ -4,6 +4,7 @@ import android.graphics.*
 import de.bmw.idrive.BMWRemoting
 import io.bimmergestalt.idriveconnectkit.CDS
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import me.hufman.androidautoidrive.cds.CDSMetrics
 import me.hufman.androidautoidrive.cds.flow
@@ -13,6 +14,7 @@ import me.hufman.androidautoidrive.utils.Utils
 class ParkingSensors(metrics: CDSMetrics) {
     companion object {
         const val TITLE = "430d PDC"
+        const val MIN_RENDER_MS = 600L
         internal fun distance(value: Double?): Int? = value?.takeIf { it in 0.0..252.0 }?.toInt()
         private val keys = listOf("outLeft", "left", "middleLeft", "middleRight", "right", "outRight")
     }
@@ -21,7 +23,9 @@ class ParkingSensors(metrics: CDSMetrics) {
         .map { json -> keys.map { distance(LiveDashboard.number(json, if (front) "PDCRangeFront" else "PDCRangeRear", it)) } }
         .onStart { emit(List(6) { null }) }
 
-    val fields: List<Flow<Any>> = listOf(values(true).combine(values(false)) { front, rear ->
+    // the sensors change quickly while parking, so only render when a distance changed and at most every MIN_RENDER_MS
+    val fields: List<Flow<Any>> = listOf(values(true).combine(values(false)) { front, rear -> front to rear }
+        .distinctUntilChanged().conflate().onEach { delay(MIN_RENDER_MS) }.map { (front, rear) ->
         val bitmap = Bitmap.createBitmap(760, 300, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         canvas.drawColor(LiveCharts.STYLE.surface)
