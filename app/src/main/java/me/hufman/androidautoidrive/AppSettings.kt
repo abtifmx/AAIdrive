@@ -73,7 +73,12 @@ interface AppSettings {
 		PREFER_CAR_LANGUAGE("Prefer_Car_Language", "true", "Prefer the car's language instead of the phone's language"),
 		FORCE_CAR_LANGUAGE("Force_Car_Language", "", "Force a specific language for the car apps"),
 		ENABLED_ANALYTICS("Enable_Analytics", "false", "Enable Analytics module"),
-		MUSIC_SEARCH_QUERY_HISTORY("Music_Search_Query_History","", "Music service search query history")
+		MUSIC_SEARCH_QUERY_HISTORY("Music_Search_Query_History","", "Music service search query history"),
+		DASHBOARD_ENGINE_PROFILE("Dashboard_Engine_Profile", "auto", "Engine profile for the car dashboard thresholds: auto, diesel or petrol"),
+		DASHBOARD_THRESHOLDS("Dashboard_Thresholds", "{}", "JSON of the dashboard threshold overrides per engine profile"),
+		DASHBOARD_LAST_FUEL("Dashboard_Last_Fuel", "", "The last engine type that the car reported"),
+		DASHBOARD_MODEL_NAME("Dashboard_Model_Name", "", "Custom model name for the car dashboard, empty to detect it"),
+		DASHBOARD_REFRESH_MS("Dashboard_Refresh_Ms", "1000", "Minimum time between dashboard images sent to the car")
 	}
 
 	/** Store the active preferences in a singleton */
