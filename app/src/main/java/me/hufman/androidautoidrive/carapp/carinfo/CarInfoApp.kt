@@ -53,7 +53,8 @@ import me.hufman.androidautoidrive.utils.Utils
 
 class CarInfoApp(val iDriveConnectionStatus: IDriveConnectionStatus, val securityAccess: SecurityAccess,
                  val carAppAssets: CarAppResources, val unsignedCarAppAssets: CarAppResources,
-                 val handler: Handler, val resources: Resources, val appSettings: AppSettings) {
+                 val handler: Handler, val resources: Resources, val appSettings: AppSettings,
+                 val persistSetting: (AppSettings.KEYS, String) -> Unit = { key, value -> AppSettings.tempSetSetting(key, value) }) {
 	private val coroutineContext = handler.asCoroutineDispatcher()
 	val carConnection: BMWRemotingServer
 	var rhmiHandle: Int = -1
@@ -92,7 +93,7 @@ class CarInfoApp(val iDriveConnectionStatus: IDriveConnectionStatus, val securit
 			val carInfo = CarInformation().also {
 				cdsData.flow.defaultIntervalLimit = 100
 			}
-			val carDetailedInfo = CarDetailedInfo(carInfo.capabilities, CDSMetrics(carInfo), appSettings)
+			val carDetailedInfo = CarDetailedInfo(carInfo.capabilities, CDSMetrics(carInfo), appSettings, DashboardLabels.fromResources(resources), persistSetting)
 			val destStateId = carApp.components.values.filterIsInstance<RHMIComponent.EntryButton>().first().getAction()?.asHMIAction()?.target!!
 			this.infoState = CarDetailedView(carApp.states[destStateId] as RHMIState, coroutineContext, carDetailedInfo)
 			val categoryState = infoState.state.componentsList.filterIsInstance<RHMIComponent.Button>().first().getAction()?.asHMIAction()?.getTargetState()!!

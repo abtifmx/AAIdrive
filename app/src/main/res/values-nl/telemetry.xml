@@ -92,4 +92,13 @@
     <string name="tile_engine">Motor</string>
     <string name="tile_oil">Olie</string>
     <string name="tl_live_show_all">Alle velden tonen, ook zonder waarde</string>
+    <string name="dash_label_oil">Olie</string>
+    <string name="dash_label_engine">Motor</string>
+    <string name="dash_label_rpm">Toerental</string>
+    <string name="dash_label_speed">Snelheid</string>
+    <string name="dash_state_cold">Koud</string>
+    <string name="dash_state_high">Hoog</string>
+    <string name="dash_state_critical">Kritiek</string>
+    <string name="dash_state_gentle">Rustig aan</string>
+    <string name="dash_state_limit">Limiet</string>
 </resources>

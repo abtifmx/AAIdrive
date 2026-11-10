@@ -1,5 +1,6 @@
 package me.hufman.androidautoidrive.carapp.carinfo.views
 
+import android.os.SystemClock
 import de.bmw.idrive.BMWRemoting
 import io.bimmergestalt.idriveconnectkit.rhmi.*
 import kotlinx.coroutines.*
@@ -67,7 +68,9 @@ class CarDetailedView(val state: RHMIState, val coroutineContext: CoroutineConte
 				rows.rhmiDataTableFlow { it }
 					.batchDataTables(100)
 					.collect {
+						val started = SystemClock.elapsedRealtime()
 						list.app.setModel(list.model, it)
+						if (single) carInfo.pacer.recordSend(SystemClock.elapsedRealtime() - started)
 					}
 			}
 		}

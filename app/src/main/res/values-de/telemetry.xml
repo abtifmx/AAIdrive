@@ -92,4 +92,13 @@
     <string name="tile_engine">Motor</string>
     <string name="tile_oil">Öl</string>
     <string name="tl_live_show_all">Alle Felder anzeigen, auch ohne Wert</string>
+    <string name="dash_label_oil">Öl</string>
+    <string name="dash_label_engine">Motor</string>
+    <string name="dash_label_rpm">Drehzahl</string>
+    <string name="dash_label_speed">Tempo</string>
+    <string name="dash_state_cold">Kalt</string>
+    <string name="dash_state_high">Hoch</string>
+    <string name="dash_state_critical">Kritisch</string>
+    <string name="dash_state_gentle">Schonen</string>
+    <string name="dash_state_limit">Limit</string>
 </resources>

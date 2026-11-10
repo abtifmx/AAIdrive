@@ -2,6 +2,7 @@ package me.hufman.androidautoidrive.carapp.carinfo
 
 import android.util.Log
 import io.bimmergestalt.idriveconnectkit.android.CarAppAssetResources
+import me.hufman.androidautoidrive.AppSettings
 import me.hufman.androidautoidrive.AppSettingsViewer
 import me.hufman.androidautoidrive.MainService
 import me.hufman.androidautoidrive.carapp.CarAppService
@@ -21,7 +22,8 @@ class CarInfoAppService: CarAppService()  {
 		val carApp = CarInfoApp(iDriveConnectionStatus, securityAccess,
 			CarAppAssetResources(applicationContext, "news"),
 			CarAppAssetResources(applicationContext, "carinfo_unsigned"),
-			handler, applicationContext.resources, AppSettingsViewer()
+			handler, applicationContext.resources, AppSettingsViewer(),
+			{ key, value -> AppSettings.saveSetting(applicationContext, key, value) }
 		)
 		this.carApp = carApp
 		readoutController = ReadoutCommandsReceiver(carApp.readoutCommands)

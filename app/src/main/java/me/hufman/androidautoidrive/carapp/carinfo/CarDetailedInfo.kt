@@ -17,7 +17,9 @@ enum class CarInfoPage(val singleColumn: Boolean = false) {
 	LIVE, DASHBOARD(true), OVERVIEW, DRIVING, SPORT, DRIVING_ADVANCED, SPORT_ADVANCED, GPS, AC, WINDOWS, TRAVEL
 }
 
-class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics, appSettings: AppSettings = AppSettingsViewer()) {
+class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics, appSettings: AppSettings = AppSettingsViewer(),
+                      labels: DashboardLabels = DashboardLabels.DEFAULT,
+                      persistSetting: (AppSettings.KEYS, String) -> Unit = { key, value -> AppSettings.tempSetSetting(key, value) }) {
 	// general car information
 
 	// RHD is guessed, defaults to LHD
@@ -295,7 +297,9 @@ class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics
 		distOrCityLabel, timeOrStreetLabel
 	)
 
-	private val liveCharts = LiveCharts(cdsMetrics)
+	/** Paces the images of the dashboard page and logs how long the car needs for them */
+	val pacer = RenderPacer(appSettings)
+	private val dashboardGauges = DashboardGauges(cdsMetrics, appSettings, pacer, labels, persistSetting)
 	val vehicleName = VehicleName(cdsMetrics, carCapabilities, appSettings)
 
 	fun label(page: CarInfoPage): String = when (page) {
@@ -312,7 +316,7 @@ class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics
 
 	val basicCategories = LinkedHashMap<CarInfoPage, List<Flow<Any>>>().apply {
 		put(CarInfoPage.LIVE, LiveDashboard(cdsMetrics).fields)
-		put(CarInfoPage.DASHBOARD, liveCharts.fields)
+		put(CarInfoPage.DASHBOARD, listOf(dashboardGauges.row))
 		put(CarInfoPage.OVERVIEW, overviewFields)
 		put(CarInfoPage.DRIVING, drivingFields)
 		put(CarInfoPage.SPORT, sportFields)

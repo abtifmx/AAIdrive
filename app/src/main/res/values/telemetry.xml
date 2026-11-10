@@ -92,4 +92,13 @@
     <string name="tile_engine">Engine</string>
     <string name="tile_oil">Oil</string>
     <string name="tl_live_show_all">Show all fields, including empty ones</string>
+    <string name="dash_label_oil">Oil</string>
+    <string name="dash_label_engine">Engine</string>
+    <string name="dash_label_rpm">RPM</string>
+    <string name="dash_label_speed">Speed</string>
+    <string name="dash_state_cold">Cold</string>
+    <string name="dash_state_high">High</string>
+    <string name="dash_state_critical">Critical</string>
+    <string name="dash_state_gentle">Take it easy</string>
+    <string name="dash_state_limit">Limit</string>
 </resources>
