@@ -300,6 +300,7 @@ class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics
 	/** Paces the images of the dashboard page and logs how long the car needs for them */
 	val pacer = RenderPacer(appSettings)
 	private val dashboardGauges = DashboardGauges(cdsMetrics, appSettings, pacer, labels, persistSetting)
+	private val climateRow = ClimateRow(cdsMetrics, rightHandDrive, pacer)
 	val vehicleName = VehicleName(cdsMetrics, carCapabilities, appSettings)
 
 	fun label(page: CarInfoPage): String = when (page) {
@@ -316,7 +317,7 @@ class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics
 
 	val basicCategories = LinkedHashMap<CarInfoPage, List<Flow<Any>>>().apply {
 		put(CarInfoPage.LIVE, LiveDashboard(cdsMetrics).fields)
-		put(CarInfoPage.DASHBOARD, listOf(dashboardGauges.row))
+		put(CarInfoPage.DASHBOARD, listOf(dashboardGauges.row, climateRow.row))
 		put(CarInfoPage.OVERVIEW, overviewFields)
 		put(CarInfoPage.DRIVING, drivingFields)
 		put(CarInfoPage.SPORT, sportFields)
