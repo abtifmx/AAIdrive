@@ -37,9 +37,6 @@ class LiveDashboardTest {
         assertEquals("Motor: --", read(0, CDS.ENGINE.TEMPERATURE, warm, """{"temperature":{"engine":255}}"""))
         assertEquals("Motor: --", read(0, CDS.ENGINE.TEMPERATURE, warm, """{"error":401}"""))
         assertEquals("Tank: 0,0 l", read(4, CDS.SENSORS.FUEL, """{"fuel":{"tanklevel":0}}"""))
-        assertNull(me.hufman.androidautoidrive.carapp.carinfo.ParkingSensors.distance(254.0))
-        assertNull(me.hufman.androidautoidrive.carapp.carinfo.ParkingSensors.distance(253.0))
-        assertEquals(120, me.hufman.androidautoidrive.carapp.carinfo.ParkingSensors.distance(120.0))
         assertEquals("Höhe: --", read(11, CDS.NAVIGATION.GPSEXTENDEDINFO,
             """{"GPSExtendedInfo":{"altitude":120}}""", """{"GPSExtendedInfo":{"altitude":65530}}"""))
     }
@@ -58,7 +55,7 @@ class LiveDashboardTest {
         val fields = info.basicCategories.getValue(LiveDashboard.TITLE)
         assertSame(fields, info.advancedCategories.getValue(LiveDashboard.TITLE))
         assertEquals(LiveDashboard.TITLE, info.category.value)   // start on the text page, the image pages are heavier for the car
-        assertEquals(16, fields.size)
+        assertEquals(14, fields.size)
         // Every cell renders immediately even when the car provides no CDS data.
         withTimeout(1000) {
             fields.forEach { assertTrue((it.first() as String).isNotEmpty()) }

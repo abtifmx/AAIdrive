@@ -24,12 +24,10 @@ import java.util.Locale
 class LiveCharts(metrics: CDSMetrics) {
 	companion object {
 		const val TITLE = "430d Dashboard"
-		const val DETAILS_TITLE = "430d Verläufe"
 		const val WINDOW_MS = 120_000L
 		const val REFRESH_MS = 4000L
 		// bitmap sizes in px. They are scaled by the car to the table column
 		const val LINE_WIDTH = 760
-		const val LINE_HEIGHT = 240
 		const val GAUGE_SIZE = 190
 
 		// dark colors for the car display
@@ -56,8 +54,6 @@ class LiveCharts(metrics: CDSMetrics) {
 	private val engine = series(CDS.ENGINE.TEMPERATURE, "Motor", "°C", 40.0, 130.0, 0, -50.0..254.0, "temperature", "engine")
 	private val rpm = series(CDS.ENGINE.RPMSPEED, "Drehzahl", "U/min", 0.0, 5500.0, 0, 0.0..10000.0, "RPMSpeed")
 	private val speed = series(CDS.DRIVING.SPEEDACTUAL, "Tempo", "km/h", 0.0, 260.0, 0, 0.0..400.0, "speedActual")
-	private val torque = series(CDS.ENGINE.TORQUE, "Drehmoment", "Nm", 0.0, 700.0, 0, 0.0..2000.0, "torque")
-	private val pedal = series(CDS.DRIVING.ACCELERATORPEDAL, "Gaspedal", "%", 0.0, 100.0, 0, 0.0..100.0, "acceleratorPedal", "position")
 
 	private fun png(bitmap: Bitmap): BMWRemoting.RHMIResourceData {
 		val bytes = Utils.compressBitmapPng(bitmap)
@@ -98,22 +94,5 @@ class LiveCharts(metrics: CDSMetrics) {
             png(bitmap) as Any
         }
 
-    private fun line(s: Series): Flow<Any> = s.frames().map { current ->
-        val now = System.currentTimeMillis()
-        val bitmap = Bitmap.createBitmap(LINE_WIDTH, LINE_HEIGHT + 50, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        canvas.drawColor(STYLE.surface)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = STYLE.label; textSize = 25f }
-        val value = current?.let { "${s.text(it)} ${s.unit}" } ?: "aktuell nicht verfügbar"
-        canvas.drawText("${s.title} · $value", 16f, 32f, paint)
-        canvas.translate(0f, 50f)
-        TelemetryChartRenderer.drawCurve(canvas, LINE_WIDTH, LINE_HEIGHT, s.history.snapshot(), now - WINDOW_MS, now,
-            STYLE.copy(density = 1.7f), formatTime = { elapsed -> "${(elapsed - WINDOW_MS) / 1000}s" },
-            formatValue = { String.format(Locale.GERMAN, if (s.unit == "°C") "%.1f" else "%.0f", it) },
-            lowerBound = if (s.min >= 0 && s.unit != "°C") 0.0 else null)
-        png(bitmap) as Any
-    }
-
     val fields: List<Flow<Any>> = listOf(dashboardRow(listOf(oil, engine, rpm, speed)))
-    val detailFields: List<Flow<Any>> = listOf(oil, engine, rpm, speed, torque, pedal).map(::line)
 }

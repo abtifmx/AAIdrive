@@ -47,7 +47,6 @@ class LiveDashboard(metrics: CDSMetrics) {
         field(CDS.CONTROLS.CRUISECONTROL, "Tempomat Soll", " km/h", valid = { it in 0.0..400.0 }, path = arrayOf("cruiseControl", "desiredSpeed")),
         field(CDS.NAVIGATION.GPSEXTENDEDINFO, "Höhe", " m", valid = { it in -1000.0..10000.0 }, path = arrayOf("GPSExtendedInfo", "altitude")),
         field(CDS.SENSORS.TEMPERATUREEXTERIOR, "Außen", " °C", 1, { it in -80.0..100.0 }, "temperatureExterior"),
-        field(CDS.SENSORS.TEMPERATUREINTERIOR, "Innen", " °C", 1, { it in -80.0..100.0 }, "temperatureInterior"),
-        flowOf("Parksensoren"), flowOf("Siehe Kategorie 430d PDC")
+        field(CDS.SENSORS.TEMPERATUREINTERIOR, "Innen", " °C", 1, { it in -80.0..100.0 }, "temperatureInterior")
     )
 }
