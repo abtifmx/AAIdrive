@@ -101,4 +101,32 @@
     <string name="dash_state_critical">Kritisch</string>
     <string name="dash_state_gentle">Schonen</string>
     <string name="dash_state_limit">Limit</string>
+    <string name="ds_title">Auto-Dashboard</string>
+    <string name="ds_profile">Motorprofil</string>
+    <string name="ds_auto">Automatisch</string>
+    <string name="ds_diesel">Diesel</string>
+    <string name="ds_petrol">Benzin</string>
+    <string name="ds_detected">Erkannt: %1$s</string>
+    <string name="ds_not_connected">noch nicht verbunden</string>
+    <string name="ds_edit">Grenzwerte bearbeiten für</string>
+    <string name="ds_active">aktiv</string>
+    <string name="ds_section_oil">Öltemperatur</string>
+    <string name="ds_section_engine">Motor (Kühlmittel)</string>
+    <string name="ds_section_rpm">Drehzahl</string>
+    <string name="ds_scale_min">Skala von</string>
+    <string name="ds_scale_max">Skala bis</string>
+    <string name="ds_cold_below">KALT unter</string>
+    <string name="ds_high_from">HOCH ab</string>
+    <string name="ds_critical_from">KRITISCH ab</string>
+    <string name="ds_gentle_from">SCHONEN ab (bei kaltem Öl)</string>
+    <string name="ds_limit_from">LIMIT ab</string>
+    <string name="ds_reset">Auf Standard zurücksetzen</string>
+    <string name="ds_model_name">Modellname</string>
+    <string name="ds_model_hint">Automatisch: %1$s</string>
+    <string name="ds_refresh">Aktualisierung Dashboard (ms)</string>
+    <string name="ds_refresh_hint">Niedrige Werte belasten das iDrive stärker</string>
+    <string name="ds_error_number">Zahl eingeben</string>
+    <string name="ds_error_temp">Es muss gelten: Skala von &lt; KALT &lt; HOCH &lt; KRITISCH &lt;= Skala bis</string>
+    <string name="ds_error_rpm">Es muss gelten: SCHONEN &lt; HOCH &lt; LIMIT &lt;= Skala bis</string>
+    <string name="ds_error_refresh">500 bis 4000</string>
 </resources>

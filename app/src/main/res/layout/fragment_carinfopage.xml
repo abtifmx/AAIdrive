@@ -33,6 +33,20 @@
                     android:layout_marginBottom="@dimen/pane_vertical_margin"/>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/buttonDashboardSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pane_vertical_margin"
+                android:background="@drawable/telemetry_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:minHeight="56dp"
+                android:gravity="center_vertical"
+                android:padding="18dp"
+                android:textSize="16sp"
+                android:text="@string/ds_title" />
+
             <androidx.fragment.app.FragmentContainerView
                 android:background="@drawable/telemetry_card"
                 android:padding="18dp"

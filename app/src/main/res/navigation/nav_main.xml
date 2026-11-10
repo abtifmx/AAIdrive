@@ -2,6 +2,9 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main"
     app:startDestination="@id/nav_overview">
+    <fragment android:id="@+id/nav_dashboard_settings"
+        android:name="me.hufman.androidautoidrive.phoneui.fragments.DashboardSettingsFragment"
+        android:label="@string/ds_title" />
     <fragment android:id="@+id/nav_more"
         android:name="me.hufman.androidautoidrive.phoneui.fragments.MoreFragment"
         android:label="@string/menu_more" />

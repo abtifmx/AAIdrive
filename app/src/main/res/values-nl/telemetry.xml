@@ -101,4 +101,32 @@
     <string name="dash_state_critical">Kritiek</string>
     <string name="dash_state_gentle">Rustig aan</string>
     <string name="dash_state_limit">Limiet</string>
+    <string name="ds_title">Auto-dashboard</string>
+    <string name="ds_profile">Motorprofiel</string>
+    <string name="ds_auto">Automatisch</string>
+    <string name="ds_diesel">Diesel</string>
+    <string name="ds_petrol">Benzine</string>
+    <string name="ds_detected">Herkend: %1$s</string>
+    <string name="ds_not_connected">nog niet verbonden</string>
+    <string name="ds_edit">Grenswaarden bewerken voor</string>
+    <string name="ds_active">actief</string>
+    <string name="ds_section_oil">Olietemperatuur</string>
+    <string name="ds_section_engine">Motor (koelvloeistof)</string>
+    <string name="ds_section_rpm">Toerental</string>
+    <string name="ds_scale_min">Schaal vanaf</string>
+    <string name="ds_scale_max">Schaal tot</string>
+    <string name="ds_cold_below">KOUD onder</string>
+    <string name="ds_high_from">HOOG vanaf</string>
+    <string name="ds_critical_from">KRITIEK vanaf</string>
+    <string name="ds_gentle_from">RUSTIG AAN vanaf (koude olie)</string>
+    <string name="ds_limit_from">LIMIET vanaf</string>
+    <string name="ds_reset">Standaardwaarden herstellen</string>
+    <string name="ds_model_name">Modelnaam</string>
+    <string name="ds_model_hint">Automatisch: %1$s</string>
+    <string name="ds_refresh">Verversing dashboard (ms)</string>
+    <string name="ds_refresh_hint">Lage waarden belasten iDrive zwaarder</string>
+    <string name="ds_error_number">Voer een getal in</string>
+    <string name="ds_error_temp">Er moet gelden: schaal vanaf &lt; KOUD &lt; HOOG &lt; KRITIEK &lt;= schaal tot</string>
+    <string name="ds_error_rpm">Er moet gelden: RUSTIG AAN &lt; HOOG &lt; LIMIET &lt;= schaal tot</string>
+    <string name="ds_error_refresh">500 tot 4000</string>
 </resources>

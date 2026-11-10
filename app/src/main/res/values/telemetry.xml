@@ -101,4 +101,32 @@
     <string name="dash_state_critical">Critical</string>
     <string name="dash_state_gentle">Take it easy</string>
     <string name="dash_state_limit">Limit</string>
+    <string name="ds_title">Car dashboard</string>
+    <string name="ds_profile">Engine profile</string>
+    <string name="ds_auto">Automatic</string>
+    <string name="ds_diesel">Diesel</string>
+    <string name="ds_petrol">Petrol</string>
+    <string name="ds_detected">Detected: %1$s</string>
+    <string name="ds_not_connected">not connected yet</string>
+    <string name="ds_edit">Edit thresholds for</string>
+    <string name="ds_active">active</string>
+    <string name="ds_section_oil">Oil temperature</string>
+    <string name="ds_section_engine">Engine (coolant)</string>
+    <string name="ds_section_rpm">Rpm</string>
+    <string name="ds_scale_min">Scale from</string>
+    <string name="ds_scale_max">Scale to</string>
+    <string name="ds_cold_below">COLD below</string>
+    <string name="ds_high_from">HIGH from</string>
+    <string name="ds_critical_from">CRITICAL from</string>
+    <string name="ds_gentle_from">TAKE IT EASY from (cold oil)</string>
+    <string name="ds_limit_from">LIMIT from</string>
+    <string name="ds_reset">Reset to defaults</string>
+    <string name="ds_model_name">Model name</string>
+    <string name="ds_model_hint">Automatic: %1$s</string>
+    <string name="ds_refresh">Dashboard refresh (ms)</string>
+    <string name="ds_refresh_hint">Low values load the iDrive more</string>
+    <string name="ds_error_number">Enter a number</string>
+    <string name="ds_error_temp">Needs: scale from &lt; COLD &lt; HIGH &lt; CRITICAL &lt;= scale to</string>
+    <string name="ds_error_rpm">Needs: TAKE IT EASY &lt; HIGH &lt; LIMIT &lt;= scale to</string>
+    <string name="ds_error_refresh">500 to 4000</string>
 </resources>

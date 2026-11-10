@@ -27,6 +27,7 @@ class MoreFragment: Fragment() {
 			Entry(R.id.nav_calendar, R.drawable.ic_calendar_feather, R.string.menu_calendar),
 			Entry(R.id.nav_navigation, R.drawable.ic_navigation_feather, R.string.menu_navigation),
 			Entry(R.id.nav_maps, R.drawable.ic_map_feather, R.string.menu_maps),
+			Entry(R.id.nav_dashboard_settings, R.drawable.ic_baseline_directions_car_24, R.string.ds_title),
 			Entry(R.id.nav_settings, R.drawable.ic_settings_feather, R.string.menu_settings),
 			Entry(R.id.nav_connection, R.drawable.ic_radio_feather, R.string.menu_connection, true),
 			Entry(R.id.nav_assistants, R.drawable.ic_mic_feather, R.string.menu_assistants, true),
