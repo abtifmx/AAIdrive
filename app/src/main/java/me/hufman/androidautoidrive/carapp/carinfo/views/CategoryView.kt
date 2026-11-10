@@ -23,7 +23,7 @@ class CategoryView(val state: RHMIState, val carInfo: CarDetailedInfo, val appSe
 
 		state.focusCallback = FocusCallback { visible ->
 			if (visible) {
-				listComponent.getModel()?.value = RHMIModel.RaListModel.RHMIListAdapter(1, categories.keys.toList())
+				listComponent.getModel()?.value = RHMIModel.RaListModel.RHMIListAdapter(1, categories.keys.map { carInfo.label(it) })
 			}
 		}
 	}

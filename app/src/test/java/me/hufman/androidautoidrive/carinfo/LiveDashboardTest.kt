@@ -6,6 +6,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import me.hufman.androidautoidrive.CarInformation
 import me.hufman.androidautoidrive.carapp.carinfo.CarDetailedInfo
+import me.hufman.androidautoidrive.carapp.carinfo.CarInfoPage
 import me.hufman.androidautoidrive.carapp.carinfo.LiveDashboard
 import me.hufman.androidautoidrive.cds.CDSMetrics
 import me.hufman.androidautoidrive.cds.*
@@ -52,9 +53,9 @@ class LiveDashboardTest {
 
     @Test fun dashboardIsAvailableWithAndWithoutAdvancedSettings() = runBlocking {
         val info = CarDetailedInfo(emptyMap(), CDSMetrics(CarInformation()))
-        val fields = info.basicCategories.getValue(LiveDashboard.TITLE)
-        assertSame(fields, info.advancedCategories.getValue(LiveDashboard.TITLE))
-        assertEquals(LiveDashboard.TITLE, info.category.value)   // start on the text page, the image pages are heavier for the car
+        val fields = info.basicCategories.getValue(CarInfoPage.LIVE)
+        assertSame(fields, info.advancedCategories.getValue(CarInfoPage.LIVE))
+        assertEquals(CarInfoPage.LIVE, info.category.value)   // start on the text page, the image pages are heavier for the car
         assertEquals(14, fields.size)
         // Every cell renders immediately even when the car provides no CDS data.
         withTimeout(1000) {

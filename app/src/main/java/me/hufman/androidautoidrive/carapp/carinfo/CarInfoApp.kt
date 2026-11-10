@@ -20,10 +20,15 @@ import io.bimmergestalt.idriveconnectkit.rhmi.RHMIComponent
 import io.bimmergestalt.idriveconnectkit.rhmi.RHMIEvent
 import io.bimmergestalt.idriveconnectkit.rhmi.RHMIState
 import io.bimmergestalt.idriveconnectkit.rhmi.deserialization.loadFromXML
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.android.asCoroutineDispatcher
+import kotlinx.coroutines.launch
 import me.hufman.androidautoidrive.AppSettings
 import me.hufman.androidautoidrive.BuildConfig
 import me.hufman.androidautoidrive.CarInformation
+import me.hufman.androidautoidrive.CarThreadExceptionHandler
 import me.hufman.androidautoidrive.R
 import me.hufman.androidautoidrive.carapp.AMCategory
 import me.hufman.androidautoidrive.carapp.FocusTriggerController
@@ -59,6 +64,7 @@ class CarInfoApp(val iDriveConnectionStatus: IDriveConnectionStatus, val securit
 	val infoState: CarDetailedView
 	val categoryState: CategoryView
 	val readoutCommands: ReadoutCommands
+	private val backgroundScope = CoroutineScope(coroutineContext + SupervisorJob() + CarThreadExceptionHandler)
 
 	init {
 		val cdsData = CDSDataProvider()
@@ -86,13 +92,14 @@ class CarInfoApp(val iDriveConnectionStatus: IDriveConnectionStatus, val securit
 			val carInfo = CarInformation().also {
 				cdsData.flow.defaultIntervalLimit = 100
 			}
-			val carDetailedInfo = CarDetailedInfo(carInfo.capabilities, CDSMetrics(carInfo))
+			val carDetailedInfo = CarDetailedInfo(carInfo.capabilities, CDSMetrics(carInfo), appSettings)
 			val destStateId = carApp.components.values.filterIsInstance<RHMIComponent.EntryButton>().first().getAction()?.asHMIAction()?.target!!
 			this.infoState = CarDetailedView(carApp.states[destStateId] as RHMIState, coroutineContext, carDetailedInfo)
 			val categoryState = infoState.state.componentsList.filterIsInstance<RHMIComponent.Button>().first().getAction()?.asHMIAction()?.getTargetState()!!
 			this.categoryState = CategoryView(categoryState, carDetailedInfo, appSettings)
 
 			initWidgets()
+			backgroundScope.launch { carDetailedInfo.vehicleName.flow.collect {} }     // learn the car name in the background
 		}
 
 		// register for car info updates
@@ -230,6 +237,7 @@ class CarInfoApp(val iDriveConnectionStatus: IDriveConnectionStatus, val securit
 	}
 
 	fun disconnect() {
+		backgroundScope.cancel()
 		try {
 			IDriveConnection.disconnectEtchConnection(carConnection)
 		} catch ( e: java.io.IOError) {

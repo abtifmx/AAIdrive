@@ -8,7 +8,6 @@ import me.hufman.androidautoidrive.CarThreadExceptionHandler
 import me.hufman.androidautoidrive.carapp.L
 import me.hufman.androidautoidrive.carapp.batchDataTables
 import me.hufman.androidautoidrive.carapp.carinfo.CarDetailedInfo
-import me.hufman.androidautoidrive.carapp.carinfo.LiveCharts
 import me.hufman.androidautoidrive.carapp.rhmiDataTableFlow
 import kotlin.coroutines.CoroutineContext
 
@@ -42,13 +41,13 @@ class CarDetailedView(val state: RHMIState, val coroutineContext: CoroutineConte
 
 	private fun onShow() {
 		coroutineScope.launch {
-			carInfo.category.collectLatest { title ->
+			carInfo.pageTitle.collectLatest { title ->
 				label.getModel()?.asRaDataModel()?.value = title
 			}
 		}
 		coroutineScope.launch {
 			carInfo.categoryFields.collectLatest { fields ->
-				val single = carInfo.category.value in setOf(LiveCharts.TITLE)
+				val single = carInfo.category.value.singleColumn
 				list.setProperty(RHMIProperty.PropertyId.LIST_COLUMNWIDTH.id, if (single) "*,0" else "*,*")
 				val rows: List<Flow<Array<Any>>> = fields.windowed(if (single) 1 else 2, if (single) 1 else 2, true).map { cells ->
 					if (cells.size == 2) {

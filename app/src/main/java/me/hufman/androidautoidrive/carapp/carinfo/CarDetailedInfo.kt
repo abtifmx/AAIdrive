@@ -1,6 +1,8 @@
 package me.hufman.androidautoidrive.carapp.carinfo
 
 import kotlinx.coroutines.flow.*
+import me.hufman.androidautoidrive.AppSettings
+import me.hufman.androidautoidrive.AppSettingsViewer
 import me.hufman.androidautoidrive.carapp.L
 import me.hufman.androidautoidrive.cds.CDSMetrics
 import me.hufman.androidautoidrive.cds.CDSVehicleUnits
@@ -10,7 +12,12 @@ import kotlin.math.absoluteValue
 import java.text.DateFormat
 import java.util.*
 
-class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics) {
+/** Stable ids of the pages in the car info view, so that the titles can change */
+enum class CarInfoPage(val singleColumn: Boolean = false) {
+	LIVE, DASHBOARD(true), OVERVIEW, DRIVING, SPORT, DRIVING_ADVANCED, SPORT_ADVANCED, GPS, AC, WINDOWS, TRAVEL
+}
+
+class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics, appSettings: AppSettings = AppSettingsViewer()) {
 	// general car information
 
 	// RHD is guessed, defaults to LHD
@@ -289,27 +296,43 @@ class CarDetailedInfo(carCapabilities: Map<String, Any?>, cdsMetrics: CDSMetrics
 	)
 
 	private val liveCharts = LiveCharts(cdsMetrics)
-	val basicCategories = LinkedHashMap<String, List<Flow<Any>>>().apply {
-		put(LiveDashboard.TITLE, LiveDashboard(cdsMetrics).fields)
-		put(LiveCharts.TITLE, liveCharts.fields)
-		put(L.CARINFO_TITLE, overviewFields)
-		put(L.CARINFO_TITLE_DRIVING, drivingFields)
-		put(L.CARINFO_TITLE_SPORT, sportFields)
+	val vehicleName = VehicleName(cdsMetrics, carCapabilities, appSettings)
+
+	fun label(page: CarInfoPage): String = when (page) {
+		CarInfoPage.LIVE -> "${vehicleName.current()} Live"
+		CarInfoPage.DASHBOARD -> "${vehicleName.current()} Dashboard"
+		CarInfoPage.OVERVIEW -> L.CARINFO_TITLE
+		CarInfoPage.DRIVING, CarInfoPage.DRIVING_ADVANCED -> L.CARINFO_TITLE_DRIVING
+		CarInfoPage.SPORT, CarInfoPage.SPORT_ADVANCED -> L.CARINFO_TITLE_SPORT
+		CarInfoPage.GPS -> L.CARINFO_TITLE_GPS
+		CarInfoPage.AC -> L.CARINFO_TITLE_AC
+		CarInfoPage.WINDOWS -> L.CARINFO_TITLE_WINDOWS
+		CarInfoPage.TRAVEL -> L.CARINFO_TITLE_TRAVEL
 	}
-	val advancedCategories = LinkedHashMap<String, List<Flow<Any>>>().apply {
-		put(LiveDashboard.TITLE, basicCategories.getValue(LiveDashboard.TITLE))
-		put(LiveCharts.TITLE, liveCharts.fields)
-		put(L.CARINFO_TITLE, overviewFields)
-		put(L.CARINFO_TITLE_DRIVING + " ", drivingAdvancedFields)   // slightly different key for the allCategories
+
+	val basicCategories = LinkedHashMap<CarInfoPage, List<Flow<Any>>>().apply {
+		put(CarInfoPage.LIVE, LiveDashboard(cdsMetrics).fields)
+		put(CarInfoPage.DASHBOARD, liveCharts.fields)
+		put(CarInfoPage.OVERVIEW, overviewFields)
+		put(CarInfoPage.DRIVING, drivingFields)
+		put(CarInfoPage.SPORT, sportFields)
+	}
+	val advancedCategories = LinkedHashMap<CarInfoPage, List<Flow<Any>>>().apply {
+		put(CarInfoPage.LIVE, basicCategories.getValue(CarInfoPage.LIVE))
+		put(CarInfoPage.DASHBOARD, basicCategories.getValue(CarInfoPage.DASHBOARD))
+		put(CarInfoPage.OVERVIEW, overviewFields)
+		put(CarInfoPage.DRIVING_ADVANCED, drivingAdvancedFields)
 
 		// add more pages like this:
-		put (L.CARINFO_TITLE_SPORT + " ", drivingPerformanceFields) // slightly different key for the allCategories
-		put(L.CARINFO_TITLE_GPS, gpsFields)
-		put (L.CARINFO_TITLE_AC, ACFields)
-		put(L.CARINFO_TITLE_WINDOWS, windowFields)
-		put(L.CARINFO_TITLE_TRAVEL, travelFields)
+		put(CarInfoPage.SPORT_ADVANCED, drivingPerformanceFields)
+		put(CarInfoPage.GPS, gpsFields)
+		put(CarInfoPage.AC, ACFields)
+		put(CarInfoPage.WINDOWS, windowFields)
+		put(CarInfoPage.TRAVEL, travelFields)
 	}
 	val allCategories = basicCategories + advancedCategories
-	val category = MutableStateFlow(allCategories.keys.first())
+	val category = MutableStateFlow(CarInfoPage.LIVE)
 	val categoryFields: Flow<List<Flow<Any>>> = category.map { allCategories[it] ?: emptyList() }
+	/** The title of the current page, which changes when the name of the car is learned */
+	val pageTitle: Flow<String> = combine(category, vehicleName.flow) { page, _ -> label(page) }
 }
